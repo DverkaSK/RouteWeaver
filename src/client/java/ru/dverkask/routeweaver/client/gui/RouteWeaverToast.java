@@ -2,7 +2,7 @@ package ru.dverkask.routeweaver.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.network.chat.Component;
@@ -83,7 +83,7 @@ public final class RouteWeaverToast implements Toast {
     }
 
     @Override
-    public void render(GuiGraphics graphics, Font font, long elapsedMs) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, Font font, long elapsedMs) {
         // Keep drawing after dismissal: the toast manager still animates the slide-out.
         graphics.fill(0, 0, WIDTH, HEIGHT, BACKGROUND);
         graphics.fill(0, 0, WIDTH, 1, Theme.OUTLINE);
@@ -91,8 +91,8 @@ public final class RouteWeaverToast implements Toast {
         graphics.fill(0, 0, 1, HEIGHT, Theme.OUTLINE);
         graphics.fill(WIDTH - 1, 0, WIDTH, HEIGHT, Theme.OUTLINE);
 
-        graphics.drawString(font, title, 8, 10, Theme.TEXT.argb(), false);
-        graphics.drawString(font, description, 8, 24, Theme.MUTED.argb(), false);
+        graphics.text(font, title, 8, 10, Theme.TEXT.argb(), false);
+        graphics.text(font, description, 8, 24, Theme.MUTED.argb(), false);
 
         graphics.fill(1, HEIGHT - 3, WIDTH - 1, HEIGHT - 1, PROGRESS_TRACK);
         int progressWidth = (int) ((WIDTH - 2) * remaining);
@@ -101,7 +101,7 @@ public final class RouteWeaverToast implements Toast {
         }
 
         if (hovered) {
-            graphics.drawString(font, Component.literal("x"), WIDTH - 11, 4, Theme.ERROR.argb(), false);
+            graphics.text(font, Component.literal("x"), WIDTH - 11, 4, Theme.ERROR.argb(), false);
         }
     }
 }
