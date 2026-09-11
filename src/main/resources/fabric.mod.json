@@ -3,25 +3,18 @@
   "id": "routeweaver",
   "version": "${version}",
   "name": "RouteWeaver",
-  "description": "",
-  "authors": [],
-  "contact": {},
+  "description": "Routes connections to chosen Minecraft servers through Shadowsocks proxies.",
+  "authors": [
+    "DverkaSK"
+  ],
   "license": "All-Rights-Reserved",
-  "icon": "assets/routeweaver/icon.png",
   "environment": "client",
   "entrypoints": {
-    "fabric-datagen": [
-      "ru.dverkask.routeweaver.client.ProxyDataGenerator"
-    ],
     "client": [
-      "ru.dverkask.routeweaver.client.ProxyClient"
-    ],
-    "main": [
-      "ru.dverkask.routeweaver.RouteWeaver"
+      "ru.dverkask.routeweaver.client.RouteWeaverClient"
     ]
   },
   "mixins": [
-    "routeweaver.mixins.json",
     {
       "config": "routeweaver.client.mixins.json",
       "environment": "client"
@@ -30,6 +23,7 @@
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric-api": "*",
-    "minecraft": "${minecraft_version}"
+    "minecraft": "${minecraft_version}",
+    "java": ">=21"
   }
 }

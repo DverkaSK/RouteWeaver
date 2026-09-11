@@ -4,7 +4,7 @@
   "package": "ru.dverkask.routeweaver.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "ClientConnectionMixin",
+    "ConnectScreenConnectorMixin",
     "ConnectScreenMixin",
     "MultiplayerScreenMixin"
   ],
