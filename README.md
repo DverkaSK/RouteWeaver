@@ -68,6 +68,23 @@ The configuration lives in `config/routeweaver/config.json`:
 
 All versions (Minecraft, Fabric, owo-lib, Kotlin) live in `gradle.properties`.
 
+## Branches and releases
+
+Each supported Minecraft version has its own branch, named after the version (`1.21.11`,
+`26.1.2`). Fixes land on one branch and are cherry-picked to the others.
+
+To release, bump `mod_version` in `gradle.properties` on the branch, then push a tag named
+`v<mod_version>+<minecraft_version>`:
+
+```sh
+git tag v1.0.0+1.21.11
+git push origin v1.0.0+1.21.11
+```
+
+The *Release* workflow checks that the tag matches `gradle.properties`, builds and tests the mod,
+and publishes the jar as a GitHub release. Every push also runs the *Build* workflow, which
+uploads the jars as an artifact.
+
 ## Project layout
 
 ```
