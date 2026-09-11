@@ -7,7 +7,7 @@ import io.wispforest.owo.ui.container.UIContainers;
 import io.wispforest.owo.ui.core.Insets;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.Surface;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 import ru.dverkask.routeweaver.config.ProxyProfile;
 
 import java.util.List;
@@ -38,9 +38,9 @@ final class ProfileDropdown {
                 .filter(profile -> profile.getId().equals(selectedId))
                 .findFirst()
                 .orElse(null);
-        Text label = selected == null
-                ? Text.translatable("routeweaver.picker.placeholder")
-                : Text.literal(Widgets.ellipsize(selected.displayName(), NAME_LENGTH + 2));
+        Component label = selected == null
+                ? Component.translatable("routeweaver.picker.placeholder")
+                : Component.literal(Widgets.ellipsize(selected.displayName(), NAME_LENGTH + 2));
 
         ButtonComponent toggle = Widgets.wideButton(
                 label.copy().append(expanded ? "  ▲" : "  ▼"),
@@ -73,9 +73,9 @@ final class ProfileDropdown {
 
     private ButtonComponent option(ProxyProfile profile, boolean selected, Consumer<String> onSelect) {
         String name = Widgets.ellipsize(profile.displayName(), NAME_LENGTH);
-        Text label = profile.isEnabled()
-                ? Text.literal(name)
-                : Text.translatable("routeweaver.picker.off", name);
+        Component label = profile.isEnabled()
+                ? Component.literal(name)
+                : Component.translatable("routeweaver.picker.off", name);
 
         ButtonComponent option = Widgets.wideButton(
                 label.copy().withColor((selected ? Theme.ACCENT : Theme.TEXT).argb()),

@@ -1,10 +1,10 @@
 package ru.dverkask.routeweaver.client.gui;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.world.WorldIcon;
-import net.minecraft.client.network.ServerInfo;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.FaviconTexture;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 import ru.dverkask.routeweaver.RouteWeaver;
 
@@ -25,30 +25,30 @@ final class ServerFavicons {
     /**
      * The texture of the server's favicon, or null if the server has not been pinged yet.
      */
-    static @Nullable Identifier textureOf(ServerInfo server) {
-        byte[] favicon = server.getFavicon();
+    static @Nullable Identifier textureOf(ServerData server) {
+        byte[] favicon = server.getIconBytes();
         if (favicon == null || favicon.length == 0) {
             return null;
         }
 
-        Entry cached = CACHE.get(server.address);
+        Entry cached = CACHE.get(server.ip);
         if (cached != null && Arrays.equals(cached.favicon, favicon)) {
-            return cached.icon.getTextureId();
+            return cached.icon.textureLocation();
         }
 
         try {
-            WorldIcon icon = cached != null
+            FaviconTexture icon = cached != null
                     ? cached.icon
-                    : WorldIcon.forServer(MinecraftClient.getInstance().getTextureManager(), server.address);
-            icon.load(NativeImage.read(favicon));
-            CACHE.put(server.address, new Entry(icon, favicon));
-            return icon.getTextureId();
+                    : FaviconTexture.forServer(Minecraft.getInstance().getTextureManager(), server.ip);
+            icon.upload(NativeImage.read(favicon));
+            CACHE.put(server.ip, new Entry(icon, favicon));
+            return icon.textureLocation();
         } catch (IOException | RuntimeException exception) {
-            RouteWeaver.LOGGER.warn("Failed to load the favicon of {}: {}", server.address, exception.getMessage());
+            RouteWeaver.LOGGER.warn("Failed to load the favicon of {}: {}", server.ip, exception.getMessage());
             return null;
         }
     }
 
-    private record Entry(WorldIcon icon, byte[] favicon) {
+    private record Entry(FaviconTexture icon, byte[] favicon) {
     }
 }

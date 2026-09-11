@@ -12,13 +12,13 @@ import java.net.InetSocketAddress;
  * Swaps the socket address inside the connector thread that {@code ConnectScreen} starts. Only
  * joining a server goes through here; the server-list pinger opens its sockets elsewhere.
  */
-@Mixin(targets = "net.minecraft.client.gui.screen.multiplayer.ConnectScreen$1")
+@Mixin(targets = "net.minecraft.client.gui.screens.ConnectScreen$1")
 public abstract class ConnectScreenConnectorMixin {
     @ModifyArg(
             method = "run",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/network/ClientConnection;connect(Ljava/net/InetSocketAddress;Lnet/minecraft/network/NetworkingBackend;Lnet/minecraft/network/ClientConnection;)Lio/netty/channel/ChannelFuture;"
+                    target = "Lnet/minecraft/network/Connection;connect(Ljava/net/InetSocketAddress;Lnet/minecraft/server/network/EventLoopGroupHolder;Lnet/minecraft/network/Connection;)Lio/netty/channel/ChannelFuture;"
             ),
             index = 0
     )

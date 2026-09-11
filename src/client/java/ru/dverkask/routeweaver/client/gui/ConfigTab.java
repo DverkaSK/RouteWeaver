@@ -3,7 +3,7 @@ package ru.dverkask.routeweaver.client.gui;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.container.UIContainers;
 import io.wispforest.owo.ui.core.Sizing;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 import java.util.Locale;
 
@@ -20,11 +20,11 @@ abstract class ConfigTab {
         this.host = host;
     }
 
-    abstract Text navLabel();
+    abstract Component navLabel();
 
-    abstract Text title();
+    abstract Component title();
 
-    abstract Text subtitle();
+    abstract Component subtitle();
 
     abstract FlowLayout buildList();
 

@@ -11,7 +11,7 @@ import io.wispforest.owo.ui.core.Insets;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.Surface;
 import io.wispforest.owo.ui.core.VerticalAlignment;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
 
@@ -27,25 +27,25 @@ final class Widgets {
 
     // ─── Labels ─────────────────────────────────────────────────────────────
 
-    static LabelComponent title(Text text) {
+    static LabelComponent title(Component text) {
         return label(text, Theme.TEXT);
     }
 
     /** Accent-coloured caption above a card or field. */
-    static LabelComponent caption(Text text) {
+    static LabelComponent caption(Component text) {
         return label(text, Theme.ACCENT);
     }
 
-    static LabelComponent body(Text text) {
+    static LabelComponent body(Component text) {
         return label(text, Theme.MUTED).maxWidth(BODY_MAX_WIDTH);
     }
 
-    static LabelComponent label(Text text, Color color) {
+    static LabelComponent label(Component text, Color color) {
         return UIComponents.label(text).color(color).shadow(false);
     }
 
     static LabelComponent label(String literal, Color color) {
-        return label(Text.literal(literal), color);
+        return label(Component.literal(literal), color);
     }
 
     // ─── Containers ─────────────────────────────────────────────────────────
@@ -59,7 +59,7 @@ final class Widgets {
         return pane;
     }
 
-    static FlowLayout card(Text caption) {
+    static FlowLayout card(Component caption) {
         FlowLayout card = UIContainers.verticalFlow(Sizing.fill(100), Sizing.content());
         card.surface(Surface.flat(Theme.CARD).and(Surface.outline(Theme.OUTLINE)));
         card.padding(Insets.of(10));
@@ -68,7 +68,7 @@ final class Widgets {
         return card;
     }
 
-    static FlowLayout heading(Text title, Text subtitle) {
+    static FlowLayout heading(Component title, Component subtitle) {
         FlowLayout heading = UIContainers.verticalFlow(Sizing.fill(100), Sizing.content());
         heading.gap(2);
         heading.child(title(title));
@@ -76,7 +76,7 @@ final class Widgets {
         return heading;
     }
 
-    static FlowLayout emptyState(Text title, Text body) {
+    static FlowLayout emptyState(Component title, Component body) {
         return card(title).child(body(body));
     }
 
@@ -111,7 +111,7 @@ final class Widgets {
 
     // ─── Buttons ────────────────────────────────────────────────────────────
 
-    static ButtonComponent button(Text text, Runnable action) {
+    static ButtonComponent button(Component text, Runnable action) {
         ButtonComponent button = UIComponents.button(text, pressed -> action.run());
         button.textShadow(false);
         button.renderer(ButtonComponent.Renderer.flat(Theme.BUTTON, Theme.BUTTON_HOVER, Theme.CARD_DISABLED));
@@ -119,26 +119,26 @@ final class Widgets {
     }
 
     /** A button that shares a row's free width with its siblings. */
-    static ButtonComponent flexButton(Text text, Runnable action) {
+    static ButtonComponent flexButton(Component text, Runnable action) {
         ButtonComponent button = button(text, action);
         button.horizontalSizing(Sizing.expand());
         return button;
     }
 
-    static ButtonComponent wideButton(Text text, Runnable action) {
+    static ButtonComponent wideButton(Component text, Runnable action) {
         ButtonComponent button = button(text, action);
         button.horizontalSizing(Sizing.fill(100));
         return button;
     }
 
-    static ButtonComponent dangerButton(Text text, Runnable action) {
+    static ButtonComponent dangerButton(Component text, Runnable action) {
         ButtonComponent button = wideButton(text, action);
         button.renderer(ButtonComponent.Renderer.flat(Theme.DANGER, Theme.DANGER_HOVER, Theme.CARD_DISABLED));
         return button;
     }
 
     /** A full-width on/off switch tinted green or red. */
-    static ButtonComponent toggle(boolean on, Text onText, Text offText, Runnable action) {
+    static ButtonComponent toggle(boolean on, Component onText, Component offText, Runnable action) {
         ButtonComponent button = wideButton(on ? onText : offText, action);
         button.renderer(ButtonComponent.Renderer.flat(
                 on ? Theme.TOGGLE_ON : Theme.TOGGLE_OFF,
@@ -149,8 +149,8 @@ final class Widgets {
 
     static ButtonComponent enabledToggle(boolean enabled, Runnable action) {
         return toggle(enabled,
-                Text.translatable("routeweaver.state.enabled"),
-                Text.translatable("routeweaver.state.disabled"),
+                Component.translatable("routeweaver.state.enabled"),
+                Component.translatable("routeweaver.state.disabled"),
                 action);
     }
 
@@ -158,7 +158,7 @@ final class Widgets {
 
     /** A text box on the dark input surface instead of vanilla's white frame. */
     static FlowLayout input(TextBoxComponent box) {
-        box.setDrawsBackground(false);
+        box.setBordered(false);
         box.horizontalSizing(Sizing.expand());
         FlowLayout wrapper = UIContainers.horizontalFlow(Sizing.fill(100), Sizing.content());
         wrapper.surface(Surface.flat(Theme.INPUT).and(Surface.outline(Theme.OUTLINE)));
@@ -176,7 +176,7 @@ final class Widgets {
     }
 
     /** A captioned text field. */
-    static FlowLayout field(Text caption, String value, Consumer<String> onChange) {
+    static FlowLayout field(Component caption, String value, Consumer<String> onChange) {
         FlowLayout field = UIContainers.verticalFlow(Sizing.fill(100), Sizing.content());
         field.gap(3);
         field.child(caption(caption));
@@ -185,7 +185,7 @@ final class Widgets {
     }
 
     /** A captioned button, laid out like {@link #field} so the two line up in a row. */
-    static FlowLayout buttonField(Text caption, ButtonComponent button) {
+    static FlowLayout buttonField(Component caption, ButtonComponent button) {
         FlowLayout field = UIContainers.verticalFlow(Sizing.fill(100), Sizing.content());
         field.gap(3);
         field.child(caption(caption));

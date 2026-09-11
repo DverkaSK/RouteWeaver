@@ -9,9 +9,9 @@ import io.wispforest.owo.ui.core.Color;
 import io.wispforest.owo.ui.core.Insets;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.VerticalAlignment;
-import net.minecraft.client.network.ServerInfo;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 import ru.dverkask.routeweaver.config.ConfigIds;
 import ru.dverkask.routeweaver.config.ProxyProfile;
@@ -42,18 +42,18 @@ final class ServersTab extends ConfigTab {
     }
 
     @Override
-    Text navLabel() {
-        return Text.translatable("routeweaver.tab.servers");
+    Component navLabel() {
+        return Component.translatable("routeweaver.tab.servers");
     }
 
     @Override
-    Text title() {
-        return Text.translatable("routeweaver.tab.servers.title");
+    Component title() {
+        return Component.translatable("routeweaver.tab.servers.title");
     }
 
     @Override
-    Text subtitle() {
-        return Text.translatable("routeweaver.tab.servers.subtitle");
+    Component subtitle() {
+        return Component.translatable("routeweaver.tab.servers.subtitle");
     }
 
     @Override
@@ -73,15 +73,15 @@ final class ServersTab extends ConfigTab {
 
         FlowLayout pane = Widgets.pane(LIST_WIDTH);
         pane.child(Widgets.heading(
-                Text.translatable("routeweaver.servers.list.title"),
-                Text.translatable("routeweaver.servers.list.subtitle")));
+                Component.translatable("routeweaver.servers.list.title"),
+                Component.translatable("routeweaver.servers.list.subtitle")));
 
         FlowLayout list = Widgets.listContent();
         visible.forEach(server -> list.child(serverCard(server)));
         if (visible.isEmpty()) {
             list.child(Widgets.emptyState(
-                    Text.translatable("routeweaver.servers.empty.title"),
-                    Text.translatable("routeweaver.servers.empty.body")));
+                    Component.translatable("routeweaver.servers.empty.title"),
+                    Component.translatable("routeweaver.servers.empty.body")));
         }
         pane.child(host.scrollMemory().verticalList("servers", list));
         return pane;
@@ -129,24 +129,24 @@ final class ServersTab extends ConfigTab {
     }
 
     private static FlowLayout metaRow(SavedServer server) {
-        ServerInfo info = server.info();
+        ServerData info = server.info();
         FlowLayout meta = Widgets.row();
         meta.child(Widgets.label(Widgets.ellipsize(server.rawAddress(), ADDRESS_LENGTH), Theme.MUTED));
         if (info.ping > 0) {
             Color pingColor = info.ping < 100 ? Theme.SUCCESS : info.ping < 300 ? Theme.ACCENT : Theme.ERROR;
-            meta.child(Widgets.label(Text.translatable("routeweaver.ping", info.ping), pingColor));
+            meta.child(Widgets.label(Component.translatable("routeweaver.ping", info.ping), pingColor));
         }
-        if (info.playerCountLabel != null && !info.playerCountLabel.getString().isBlank()) {
-            meta.child(UIComponents.label(info.playerCountLabel).shadow(false));
+        if (info.status != null && !info.status.getString().isBlank()) {
+            meta.child(UIComponents.label(info.status).shadow(false));
         }
         return meta;
     }
 
-    private static String firstMotdLine(ServerInfo info) {
-        if (info.label == null) {
+    private static String firstMotdLine(ServerData info) {
+        if (info.motd == null) {
             return "";
         }
-        String motd = info.label.getString().trim();
+        String motd = info.motd.getString().trim();
         int newline = motd.indexOf('\n');
         return (newline >= 0 ? motd.substring(0, newline) : motd).trim();
     }
@@ -169,30 +169,30 @@ final class ServersTab extends ConfigTab {
 
         FlowLayout pane = Widgets.pane(Sizing.expand());
         pane.child(Widgets.heading(
-                Text.translatable("routeweaver.servers.detail.title"),
-                Text.translatable("routeweaver.servers.detail.subtitle")));
+                Component.translatable("routeweaver.servers.detail.title"),
+                Component.translatable("routeweaver.servers.detail.subtitle")));
 
         SavedServer server = selectedServer();
         if (server == null) {
             return pane.child(Widgets.emptyState(
-                    Text.translatable("routeweaver.servers.none.title"),
-                    Text.translatable("routeweaver.servers.none.body")));
+                    Component.translatable("routeweaver.servers.none.title"),
+                    Component.translatable("routeweaver.servers.none.body")));
         }
 
         RouteWeaverConfig config = host.config();
         RoutingRule exactRule = Router.findExactRule(config, server.address());
         RouteDecision decision = Router.resolve(config, server.address());
 
-        pane.child(Widgets.card(Text.translatable("routeweaver.servers.target"))
-                .child(Widgets.title(Text.literal(server.name())))
-                .child(Widgets.body(Text.literal(server.rawAddress())))
+        pane.child(Widgets.card(Component.translatable("routeweaver.servers.target"))
+                .child(Widgets.title(Component.literal(server.name())))
+                .child(Widgets.body(Component.literal(server.rawAddress())))
                 .child(routeStatus(decision)));
         pane.child(quickRouteCard(server, exactRule));
 
-        FlowLayout help = Widgets.card(Text.translatable("routeweaver.servers.help.title"));
-        help.child(Widgets.body(Text.translatable("routeweaver.servers.help.save")));
-        help.child(Widgets.body(Text.translatable("routeweaver.servers.help.exact", server.address().toString())));
-        help.child(Widgets.body(Text.translatable(exactRule != null
+        FlowLayout help = Widgets.card(Component.translatable("routeweaver.servers.help.title"));
+        help.child(Widgets.body(Component.translatable("routeweaver.servers.help.save")));
+        help.child(Widgets.body(Component.translatable("routeweaver.servers.help.exact", server.address().toString())));
+        help.child(Widgets.body(Component.translatable(exactRule != null
                 ? "routeweaver.servers.help.has_route"
                 : "routeweaver.servers.help.no_route")));
         pane.child(help);
@@ -200,30 +200,30 @@ final class ServersTab extends ConfigTab {
     }
 
     private FlowLayout quickRouteCard(SavedServer server, @Nullable RoutingRule exactRule) {
-        FlowLayout card = Widgets.card(Text.translatable("routeweaver.servers.quick_route"));
+        FlowLayout card = Widgets.card(Component.translatable("routeweaver.servers.quick_route"));
         List<ProxyProfile> profiles = host.config().getProfiles();
         if (profiles.isEmpty()) {
-            card.child(Widgets.body(Text.translatable("routeweaver.servers.no_profiles")));
+            card.child(Widgets.body(Component.translatable("routeweaver.servers.no_profiles")));
         } else {
             card.child(profileDropdown.build(profiles, profileChoiceId, id -> profileChoiceId = id));
         }
 
         ButtonComponent save = Widgets.wideButton(
-                Text.translatable("routeweaver.servers.save_route"), () -> saveRoute(server));
+                Component.translatable("routeweaver.servers.save_route"), () -> saveRoute(server));
         save.active(host.config().findProfile(profileChoiceId) != null);
         card.child(save);
 
         if (exactRule != null) {
             card.child(Widgets.toggle(exactRule.isEnabled(),
-                    Text.translatable("routeweaver.servers.route_enabled"),
-                    Text.translatable("routeweaver.servers.route_disabled"),
+                    Component.translatable("routeweaver.servers.route_enabled"),
+                    Component.translatable("routeweaver.servers.route_disabled"),
                     () -> {
                         exactRule.setEnabled(!exactRule.isEnabled());
                         host.saveAndRefresh();
                     }));
         }
 
-        card.child(Widgets.wideButton(Text.translatable("routeweaver.servers.edit_rule"),
+        card.child(Widgets.wideButton(Component.translatable("routeweaver.servers.edit_rule"),
                 () -> openRuleEditor(server, exactRule)));
         return card;
     }
@@ -231,18 +231,18 @@ final class ServersTab extends ConfigTab {
     private static LabelComponent routeStatus(RouteDecision decision) {
         return switch (decision.kind()) {
             case PROXY -> Widgets.label(
-                    Text.translatable("routeweaver.route.proxy", decision.profile().displayName()), Theme.SUCCESS);
+                    Component.translatable("routeweaver.route.proxy", decision.profile().displayName()), Theme.SUCCESS);
             case PROXY_DISABLED -> Widgets.label(
-                    Text.translatable("routeweaver.route.proxy_disabled", decision.profile().displayName()), Theme.ACCENT);
-            case DIRECT -> Widgets.label(Text.translatable("routeweaver.route.direct_long"), Theme.MUTED);
+                    Component.translatable("routeweaver.route.proxy_disabled", decision.profile().displayName()), Theme.ACCENT);
+            case DIRECT -> Widgets.label(Component.translatable("routeweaver.route.direct_long"), Theme.MUTED);
         };
     }
 
-    private static Text routeSummary(RouteDecision decision) {
+    private static Component routeSummary(RouteDecision decision) {
         return switch (decision.kind()) {
-            case PROXY -> Text.translatable("routeweaver.route.proxy", decision.profile().displayName());
-            case PROXY_DISABLED -> Text.translatable("routeweaver.route.proxy_disabled_short");
-            case DIRECT -> Text.translatable("routeweaver.route.direct");
+            case PROXY -> Component.translatable("routeweaver.route.proxy", decision.profile().displayName());
+            case PROXY_DISABLED -> Component.translatable("routeweaver.route.proxy_disabled_short");
+            case DIRECT -> Component.translatable("routeweaver.route.direct");
         };
     }
 
@@ -255,7 +255,7 @@ final class ServersTab extends ConfigTab {
         RouteWeaverConfig config = host.config();
         ProxyProfile profile = config.findProfile(profileChoiceId);
         if (profile == null) {
-            host.flash(Text.translatable("routeweaver.error.profile_required"), true);
+            host.flash(Component.translatable("routeweaver.error.profile_required"), true);
             host.refresh();
             return;
         }
@@ -272,7 +272,7 @@ final class ServersTab extends ConfigTab {
         rule.setProxyProfileId(profile.getId());
         rule.setEnabled(true);
 
-        host.flash(Text.translatable("routeweaver.flash.route_saved", server.name(), profile.displayName()), false);
+        host.flash(Component.translatable("routeweaver.flash.route_saved", server.name(), profile.displayName()), false);
         host.saveAndRefresh();
     }
 

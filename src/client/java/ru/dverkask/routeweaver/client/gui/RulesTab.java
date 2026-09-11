@@ -3,7 +3,7 @@ package ru.dverkask.routeweaver.client.gui;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Insets;
 import io.wispforest.owo.ui.core.Sizing;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import ru.dverkask.routeweaver.config.ProxyProfile;
 import ru.dverkask.routeweaver.config.RoutingRule;
@@ -25,18 +25,18 @@ final class RulesTab extends ConfigTab {
     }
 
     @Override
-    Text navLabel() {
-        return Text.translatable("routeweaver.tab.rules");
+    Component navLabel() {
+        return Component.translatable("routeweaver.tab.rules");
     }
 
     @Override
-    Text title() {
-        return Text.translatable("routeweaver.tab.rules.title");
+    Component title() {
+        return Component.translatable("routeweaver.tab.rules.title");
     }
 
     @Override
-    Text subtitle() {
-        return Text.translatable("routeweaver.tab.rules.subtitle");
+    Component subtitle() {
+        return Component.translatable("routeweaver.tab.rules.subtitle");
     }
 
     @Override
@@ -55,15 +55,15 @@ final class RulesTab extends ConfigTab {
 
         FlowLayout pane = Widgets.pane(LIST_WIDTH);
         pane.child(Widgets.heading(
-                Text.translatable("routeweaver.rules.list.title"),
-                Text.translatable("routeweaver.rules.list.subtitle")));
+                Component.translatable("routeweaver.rules.list.title"),
+                Component.translatable("routeweaver.rules.list.subtitle")));
 
         FlowLayout list = Widgets.listContent();
         visible.forEach(rule -> list.child(ruleCard(rule)));
         if (visible.isEmpty()) {
             list.child(Widgets.emptyState(
-                    Text.translatable("routeweaver.rules.empty.title"),
-                    Text.translatable("routeweaver.rules.empty.body")));
+                    Component.translatable("routeweaver.rules.empty.title"),
+                    Component.translatable("routeweaver.rules.empty.body")));
         }
         return pane.child(host.scrollMemory().verticalList("rules", list));
     }
@@ -81,7 +81,7 @@ final class RulesTab extends ConfigTab {
                 selected ? Theme.ACCENT : rule.isEnabled() ? Theme.TEXT : Theme.MUTED));
         String profileName = profileName(rule);
         card.child(profileName.isEmpty()
-                ? Widgets.label(Text.translatable("routeweaver.rules.no_proxy"), Theme.ERROR)
+                ? Widgets.label(Component.translatable("routeweaver.rules.no_proxy"), Theme.ERROR)
                 : Widgets.label(Widgets.ellipsize(profileName, PROFILE_LENGTH), Theme.MUTED));
         card.child(Widgets.enabledToggle(rule.isEnabled(), () -> {
             rule.setEnabled(!rule.isEnabled());
@@ -101,34 +101,34 @@ final class RulesTab extends ConfigTab {
         if (rule == null) {
             return pane
                     .child(Widgets.heading(
-                            Text.translatable("routeweaver.rules.detail.title"),
-                            Text.translatable("routeweaver.rules.none.subtitle")))
+                            Component.translatable("routeweaver.rules.detail.title"),
+                            Component.translatable("routeweaver.rules.none.subtitle")))
                     .child(Widgets.emptyState(
-                            Text.translatable("routeweaver.rules.none.title"),
-                            Text.translatable("routeweaver.rules.none.body")));
+                            Component.translatable("routeweaver.rules.none.title"),
+                            Component.translatable("routeweaver.rules.none.body")));
         }
 
         String profileName = profileName(rule);
-        pane.child(Widgets.heading(Text.translatable("routeweaver.rules.detail.title"), Text.literal(target(rule))));
-        pane.child(Widgets.card(Text.translatable("routeweaver.rules.settings"))
-                .child(Widgets.body(Text.translatable("routeweaver.rules.pattern", rule.getServerPattern())))
+        pane.child(Widgets.heading(Component.translatable("routeweaver.rules.detail.title"), Component.literal(target(rule))));
+        pane.child(Widgets.card(Component.translatable("routeweaver.rules.settings"))
+                .child(Widgets.body(Component.translatable("routeweaver.rules.pattern", rule.getServerPattern())))
                 .child(Widgets.body(rule.hasPortFilter()
-                        ? Text.translatable("routeweaver.rules.port", rule.getPort())
-                        : Text.translatable("routeweaver.rules.port", Text.translatable("routeweaver.rules.port_any"))))
-                .child(Widgets.body(Text.translatable("routeweaver.rules.proxy",
+                        ? Component.translatable("routeweaver.rules.port", rule.getPort())
+                        : Component.translatable("routeweaver.rules.port", Component.translatable("routeweaver.rules.port_any"))))
+                .child(Widgets.body(Component.translatable("routeweaver.rules.proxy",
                         profileName.isEmpty() ? "—" : profileName)))
                 .child(rule.isEnabled()
-                        ? Widgets.label(Text.translatable("routeweaver.state.enabled"), Theme.SUCCESS)
-                        : Widgets.label(Text.translatable("routeweaver.state.disabled"), Theme.MUTED)));
+                        ? Widgets.label(Component.translatable("routeweaver.state.enabled"), Theme.SUCCESS)
+                        : Widgets.label(Component.translatable("routeweaver.state.disabled"), Theme.MUTED)));
 
-        pane.child(Widgets.wideButton(Text.translatable("routeweaver.rules.edit"), () -> {
+        pane.child(Widgets.wideButton(Component.translatable("routeweaver.rules.edit"), () -> {
             editor = RuleEditor.edit(host, rule, this::onEditorClosed);
             host.refresh();
         }));
-        pane.child(Widgets.dangerButton(Text.translatable("routeweaver.rules.delete"), () -> {
+        pane.child(Widgets.dangerButton(Component.translatable("routeweaver.rules.delete"), () -> {
             host.config().getRules().remove(rule);
             selectedId = "";
-            host.flash(Text.translatable("routeweaver.flash.rule_deleted"), false);
+            host.flash(Component.translatable("routeweaver.flash.rule_deleted"), false);
             host.saveAndRefresh();
         }));
         return pane;

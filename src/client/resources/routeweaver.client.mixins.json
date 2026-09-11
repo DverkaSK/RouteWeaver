@@ -6,7 +6,7 @@
   "client": [
     "ConnectScreenConnectorMixin",
     "ConnectScreenMixin",
-    "MultiplayerScreenMixin"
+    "JoinMultiplayerScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

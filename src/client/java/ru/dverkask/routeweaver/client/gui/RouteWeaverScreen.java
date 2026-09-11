@@ -13,8 +13,8 @@ import io.wispforest.owo.ui.core.OwoUIAdapter;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.Surface;
 import io.wispforest.owo.ui.core.VerticalAlignment;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ru.dverkask.routeweaver.client.ProxyRuntime;
@@ -42,7 +42,7 @@ public final class RouteWeaverScreen extends BaseOwoScreen<FlowLayout> implement
     private final List<ConfigTab> tabs;
     private ConfigTab currentTab;
     private List<SavedServer> savedServers = List.of();
-    private @Nullable Text flashMessage;
+    private @Nullable Component flashMessage;
     private boolean flashIsError;
 
     private @Nullable FlowLayout sidebar;
@@ -50,7 +50,7 @@ public final class RouteWeaverScreen extends BaseOwoScreen<FlowLayout> implement
     private @Nullable FlowLayout body;
 
     public RouteWeaverScreen(Screen parent, ProxyRuntime runtime) {
-        super(Text.translatable("routeweaver.screen.title"));
+        super(Component.translatable("routeweaver.screen.title"));
         this.parent = parent;
         this.runtime = runtime;
         this.tabs = List.of(new ServersTab(this), new ProxiesTab(this), new RulesTab(this));
@@ -64,7 +64,7 @@ public final class RouteWeaverScreen extends BaseOwoScreen<FlowLayout> implement
 
     @Override
     protected void build(FlowLayout root) {
-        savedServers = SavedServer.load(client);
+        savedServers = SavedServer.load(minecraft);
 
         root.surface(Surface.blur(2.5f, 4f).and(Surface.flat(Theme.BACKDROP)));
         root.horizontalAlignment(HorizontalAlignment.CENTER);
@@ -156,7 +156,7 @@ public final class RouteWeaverScreen extends BaseOwoScreen<FlowLayout> implement
     }
 
     @Override
-    public void flash(Text message, boolean error) {
+    public void flash(Component message, boolean error) {
         flashMessage = message;
         flashIsError = error;
     }
@@ -181,14 +181,14 @@ public final class RouteWeaverScreen extends BaseOwoScreen<FlowLayout> implement
             currentTab.query(query);
             refresh();
         });
-        search.setPlaceholder(Text.translatable("routeweaver.search.hint"));
+        search.setHint(Component.translatable("routeweaver.search.hint"));
         FlowLayout searchInput = Widgets.input(search);
         searchInput.horizontalSizing(Sizing.fixed(SEARCH_WIDTH));
         header.child(searchInput);
 
-        ButtonComponent reload = Widgets.button(Text.translatable("routeweaver.action.refresh"), () -> {
-            savedServers = SavedServer.load(client);
-            flash(Text.translatable("routeweaver.flash.refreshed"), false);
+        ButtonComponent reload = Widgets.button(Component.translatable("routeweaver.action.refresh"), () -> {
+            savedServers = SavedServer.load(minecraft);
+            flash(Component.translatable("routeweaver.flash.refreshed"), false);
             refresh();
         });
         reload.horizontalSizing(Sizing.fixed(92));
@@ -205,8 +205,8 @@ public final class RouteWeaverScreen extends BaseOwoScreen<FlowLayout> implement
         sidebar.clearChildren();
 
         FlowLayout brand = Widgets.heading(
-                Text.translatable("routeweaver.screen.title"),
-                Text.translatable("routeweaver.sidebar.tagline"));
+                Component.translatable("routeweaver.screen.title"),
+                Component.translatable("routeweaver.sidebar.tagline"));
         brand.padding(Insets.of(2, 0, 6, 0));
         sidebar.child(brand);
 
@@ -225,26 +225,26 @@ public final class RouteWeaverScreen extends BaseOwoScreen<FlowLayout> implement
         sidebar.child(engineCard());
 
         RouteWeaverConfig config = config();
-        sidebar.child(Widgets.card(Text.translatable("routeweaver.stats.title"))
-                .child(Widgets.body(Text.translatable("routeweaver.stats.servers", savedServers.size())))
-                .child(Widgets.body(Text.translatable("routeweaver.stats.proxies", config.getProfiles().size())))
-                .child(Widgets.body(Text.translatable("routeweaver.stats.rules", config.countEnabledRules()))));
+        sidebar.child(Widgets.card(Component.translatable("routeweaver.stats.title"))
+                .child(Widgets.body(Component.translatable("routeweaver.stats.servers", savedServers.size())))
+                .child(Widgets.body(Component.translatable("routeweaver.stats.proxies", config.getProfiles().size())))
+                .child(Widgets.body(Component.translatable("routeweaver.stats.rules", config.countEnabledRules()))));
 
         sidebar.child(UIContainers.verticalFlow(Sizing.fill(100), Sizing.expand()));
-        sidebar.child(Widgets.wideButton(Text.translatable("routeweaver.action.close"), this::close));
+        sidebar.child(Widgets.wideButton(Component.translatable("routeweaver.action.close"), this::onClose));
     }
 
     private FlowLayout engineCard() {
-        FlowLayout card = Widgets.card(Text.translatable("routeweaver.engine.title"));
+        FlowLayout card = Widgets.card(Component.translatable("routeweaver.engine.title"));
         InetSocketAddress tunnel = runtime.tunnelAddress();
         if (tunnel != null) {
-            card.child(Widgets.label(Text.translatable("routeweaver.engine.running"), Theme.SUCCESS));
-            card.child(Widgets.body(Text.translatable("routeweaver.engine.tunnel",
+            card.child(Widgets.label(Component.translatable("routeweaver.engine.running"), Theme.SUCCESS));
+            card.child(Widgets.body(Component.translatable("routeweaver.engine.tunnel",
                     tunnel.getHostString() + ":" + tunnel.getPort())));
         } else {
-            card.child(Widgets.label(Text.translatable("routeweaver.engine.stopped"), Theme.ERROR));
+            card.child(Widgets.label(Component.translatable("routeweaver.engine.stopped"), Theme.ERROR));
             if (!runtime.tunnelError().isEmpty()) {
-                card.child(Widgets.body(Text.literal(Widgets.ellipsize(runtime.tunnelError(), ERROR_LENGTH))));
+                card.child(Widgets.body(Component.literal(Widgets.ellipsize(runtime.tunnelError(), ERROR_LENGTH))));
             }
         }
         return card;
@@ -262,7 +262,7 @@ public final class RouteWeaverScreen extends BaseOwoScreen<FlowLayout> implement
     }
 
     @Override
-    public void close() {
-        client.setScreen(parent);
+    public void onClose() {
+        minecraft.setScreen(parent);
     }
 }

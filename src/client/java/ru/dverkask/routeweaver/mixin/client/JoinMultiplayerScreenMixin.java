@@ -1,9 +1,9 @@
 package ru.dverkask.routeweaver.mixin.client;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,17 +16,17 @@ import ru.dverkask.routeweaver.client.gui.RouteWeaverScreen;
 /**
  * Adds the "RouteWeaver" button to the top-right corner of the multiplayer screen.
  */
-@Mixin(MultiplayerScreen.class)
-public abstract class MultiplayerScreenMixin extends Screen {
+@Mixin(JoinMultiplayerScreen.class)
+public abstract class JoinMultiplayerScreenMixin extends Screen {
     @Unique
     private static final int BUTTON_WIDTH = 80;
     @Unique
     private static final int MARGIN = 8;
 
     @Unique
-    private ButtonWidget routeweaver$openButton;
+    private Button routeweaver$openButton;
 
-    protected MultiplayerScreenMixin(Text title) {
+    protected JoinMultiplayerScreenMixin(Component title) {
         super(title);
     }
 
@@ -37,14 +37,14 @@ public abstract class MultiplayerScreenMixin extends Screen {
             return;
         }
         Screen multiplayerScreen = this;
-        routeweaver$openButton = addDrawableChild(ButtonWidget.builder(
-                        Text.translatable("routeweaver.button.open"),
-                        button -> client.setScreen(new RouteWeaverScreen(multiplayerScreen, runtime)))
-                .dimensions(width - BUTTON_WIDTH - MARGIN, MARGIN, BUTTON_WIDTH, 20)
+        routeweaver$openButton = addRenderableWidget(Button.builder(
+                        Component.translatable("routeweaver.button.open"),
+                        button -> minecraft.setScreen(new RouteWeaverScreen(multiplayerScreen, runtime)))
+                .bounds(width - BUTTON_WIDTH - MARGIN, MARGIN, BUTTON_WIDTH, 20)
                 .build());
     }
 
-    @Inject(method = "refreshWidgetPositions", at = @At("TAIL"))
+    @Inject(method = "repositionElements", at = @At("TAIL"))
     private void routeweaver$keepButtonInCorner(CallbackInfo ci) {
         if (routeweaver$openButton != null) {
             routeweaver$openButton.setX(width - BUTTON_WIDTH - MARGIN);

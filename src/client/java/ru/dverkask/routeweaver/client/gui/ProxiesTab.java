@@ -4,7 +4,7 @@ import io.wispforest.owo.ui.component.ButtonComponent;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Insets;
 import io.wispforest.owo.ui.core.Sizing;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import ru.dverkask.routeweaver.config.ProxyProfile;
 import ru.dverkask.routeweaver.config.RouteWeaverConfig;
@@ -23,18 +23,18 @@ final class ProxiesTab extends ConfigTab {
     }
 
     @Override
-    Text navLabel() {
-        return Text.translatable("routeweaver.tab.proxies");
+    Component navLabel() {
+        return Component.translatable("routeweaver.tab.proxies");
     }
 
     @Override
-    Text title() {
-        return Text.translatable("routeweaver.tab.proxies.title");
+    Component title() {
+        return Component.translatable("routeweaver.tab.proxies.title");
     }
 
     @Override
-    Text subtitle() {
-        return Text.translatable("routeweaver.tab.proxies.subtitle");
+    Component subtitle() {
+        return Component.translatable("routeweaver.tab.proxies.subtitle");
     }
 
     @Override
@@ -53,19 +53,19 @@ final class ProxiesTab extends ConfigTab {
 
         FlowLayout pane = Widgets.pane(LIST_WIDTH);
         pane.child(Widgets.heading(
-                Text.translatable("routeweaver.proxies.list.title"),
-                Text.translatable("routeweaver.proxies.list.subtitle")));
+                Component.translatable("routeweaver.proxies.list.title"),
+                Component.translatable("routeweaver.proxies.list.subtitle")));
 
         FlowLayout list = Widgets.listContent();
         visible.forEach(profile -> list.child(profileCard(profile)));
         if (visible.isEmpty()) {
             list.child(Widgets.emptyState(
-                    Text.translatable("routeweaver.proxies.empty.title"),
-                    Text.translatable("routeweaver.proxies.empty.body")));
+                    Component.translatable("routeweaver.proxies.empty.title"),
+                    Component.translatable("routeweaver.proxies.empty.body")));
         }
         pane.child(host.scrollMemory().verticalList("proxies", list));
 
-        ButtonComponent add = Widgets.button(Text.translatable("routeweaver.proxies.add"), () -> {
+        ButtonComponent add = Widgets.button(Component.translatable("routeweaver.proxies.add"), () -> {
             editor = ProxyEditor.create(host, this::onEditorClosed);
             host.refresh();
         });
@@ -87,7 +87,7 @@ final class ProxiesTab extends ConfigTab {
         card.child(Widgets.label(profile.getHost() + ":" + profile.getPort(), Theme.MUTED));
         card.child(profile.isEnabled()
                 ? Widgets.label(profile.getMethod(), Theme.ACCENT)
-                : Widgets.label(Text.translatable("routeweaver.proxies.disabled"), Theme.ERROR));
+                : Widgets.label(Component.translatable("routeweaver.proxies.disabled"), Theme.ERROR));
         return card;
     }
 
@@ -99,42 +99,42 @@ final class ProxiesTab extends ConfigTab {
 
         FlowLayout pane = Widgets.pane(Sizing.expand());
         pane.child(Widgets.heading(
-                Text.translatable("routeweaver.proxies.detail.title"),
-                Text.translatable("routeweaver.proxies.detail.subtitle")));
+                Component.translatable("routeweaver.proxies.detail.title"),
+                Component.translatable("routeweaver.proxies.detail.subtitle")));
 
         RouteWeaverConfig config = host.config();
         ProxyProfile profile = config.findProfile(selectedId);
         if (profile == null) {
             return pane.child(Widgets.emptyState(
-                    Text.translatable("routeweaver.proxies.none.title"),
-                    Text.translatable("routeweaver.proxies.none.body")));
+                    Component.translatable("routeweaver.proxies.none.title"),
+                    Component.translatable("routeweaver.proxies.none.body")));
         }
 
-        pane.child(Widgets.card(Text.translatable("routeweaver.proxies.endpoint"))
-                .child(Widgets.title(Text.literal(profile.displayName())))
-                .child(Widgets.body(Text.literal(profile.getHost() + ":" + profile.getPort())))
-                .child(Widgets.body(Text.translatable("routeweaver.proxies.method", profile.getMethod())))
+        pane.child(Widgets.card(Component.translatable("routeweaver.proxies.endpoint"))
+                .child(Widgets.title(Component.literal(profile.displayName())))
+                .child(Widgets.body(Component.literal(profile.getHost() + ":" + profile.getPort())))
+                .child(Widgets.body(Component.translatable("routeweaver.proxies.method", profile.getMethod())))
                 .child(profile.isEnabled()
-                        ? Widgets.label(Text.translatable("routeweaver.state.enabled"), Theme.SUCCESS)
-                        : Widgets.label(Text.translatable("routeweaver.state.disabled"), Theme.ERROR)));
+                        ? Widgets.label(Component.translatable("routeweaver.state.enabled"), Theme.SUCCESS)
+                        : Widgets.label(Component.translatable("routeweaver.state.disabled"), Theme.ERROR)));
 
         int rulesUsing = config.countRulesUsing(profile.getId());
-        pane.child(Widgets.card(Text.translatable("routeweaver.proxies.usage"))
-                .child(Widgets.body(Text.translatable("routeweaver.proxies.usage.rules", rulesUsing)))
-                .child(Widgets.body(Text.translatable("routeweaver.proxies.usage.id", profile.getId()))));
+        pane.child(Widgets.card(Component.translatable("routeweaver.proxies.usage"))
+                .child(Widgets.body(Component.translatable("routeweaver.proxies.usage.rules", rulesUsing)))
+                .child(Widgets.body(Component.translatable("routeweaver.proxies.usage.id", profile.getId()))));
 
-        FlowLayout actions = Widgets.card(Text.translatable("routeweaver.proxies.actions"));
+        FlowLayout actions = Widgets.card(Component.translatable("routeweaver.proxies.actions"));
         FlowLayout buttons = Widgets.row();
-        buttons.child(Widgets.flexButton(Text.translatable("routeweaver.action.edit"), () -> {
+        buttons.child(Widgets.flexButton(Component.translatable("routeweaver.action.edit"), () -> {
             editor = ProxyEditor.edit(host, profile, this::onEditorClosed);
             host.refresh();
         }));
-        ButtonComponent delete = Widgets.flexButton(Text.translatable("routeweaver.action.delete"),
+        ButtonComponent delete = Widgets.flexButton(Component.translatable("routeweaver.action.delete"),
                 () -> delete(profile));
         delete.active(rulesUsing == 0);
         actions.child(buttons.child(delete));
         if (rulesUsing > 0) {
-            actions.child(Widgets.body(Text.translatable("routeweaver.proxies.delete_locked")));
+            actions.child(Widgets.body(Component.translatable("routeweaver.proxies.delete_locked")));
         }
         return pane.child(actions);
     }
@@ -149,7 +149,7 @@ final class ProxiesTab extends ConfigTab {
     private void delete(ProxyProfile profile) {
         host.config().getProfiles().remove(profile);
         selectedId = "";
-        host.flash(Text.translatable("routeweaver.flash.proxy_deleted", profile.displayName()), false);
+        host.flash(Component.translatable("routeweaver.flash.proxy_deleted", profile.displayName()), false);
         host.saveAndRefresh();
     }
 }

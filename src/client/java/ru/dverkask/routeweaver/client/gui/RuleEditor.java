@@ -2,7 +2,7 @@ package ru.dverkask.routeweaver.client.gui;
 
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Sizing;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 import ru.dverkask.routeweaver.config.ConfigIds;
 import ru.dverkask.routeweaver.config.ProxyProfile;
@@ -25,7 +25,7 @@ final class RuleEditor {
     private String pattern;
     private String port;
     private String profileId;
-    private @Nullable Text error;
+    private @Nullable Component error;
 
     private RuleEditor(ScreenHost host, String ruleId, String label, String pattern, int port, String profileId,
                        Consumer<String> onClose) {
@@ -60,26 +60,26 @@ final class RuleEditor {
     FlowLayout build() {
         FlowLayout pane = Widgets.pane(Sizing.expand());
         pane.child(Widgets.heading(
-                Text.translatable(isNew() ? "routeweaver.rule_editor.new" : "routeweaver.rule_editor.edit"),
-                Text.translatable("routeweaver.rule_editor.subtitle")));
+                Component.translatable(isNew() ? "routeweaver.rule_editor.new" : "routeweaver.rule_editor.edit"),
+                Component.translatable("routeweaver.rule_editor.subtitle")));
 
-        FlowLayout settings = Widgets.card(Text.translatable("routeweaver.rule_editor.settings"));
-        settings.child(Widgets.field(Text.translatable("routeweaver.field.rule_name"), label, value -> label = value));
+        FlowLayout settings = Widgets.card(Component.translatable("routeweaver.rule_editor.settings"));
+        settings.child(Widgets.field(Component.translatable("routeweaver.field.rule_name"), label, value -> label = value));
         FlowLayout patternRow = Widgets.row();
         patternRow.gap(10);
-        FlowLayout patternField = Widgets.field(Text.translatable("routeweaver.field.pattern"), pattern,
+        FlowLayout patternField = Widgets.field(Component.translatable("routeweaver.field.pattern"), pattern,
                 value -> pattern = value);
         patternField.horizontalSizing(Sizing.expand());
-        FlowLayout portField = Widgets.field(Text.translatable("routeweaver.field.port"), port, value -> port = value);
+        FlowLayout portField = Widgets.field(Component.translatable("routeweaver.field.port"), port, value -> port = value);
         portField.horizontalSizing(Sizing.fixed(90));
         settings.child(patternRow.child(patternField).child(portField));
-        settings.child(Widgets.body(Text.translatable("routeweaver.rule_editor.examples")));
+        settings.child(Widgets.body(Component.translatable("routeweaver.rule_editor.examples")));
         pane.child(settings);
 
-        FlowLayout profileCard = Widgets.card(Text.translatable("routeweaver.rule_editor.profile"));
+        FlowLayout profileCard = Widgets.card(Component.translatable("routeweaver.rule_editor.profile"));
         List<ProxyProfile> profiles = host.config().getProfiles();
         if (profiles.isEmpty()) {
-            profileCard.child(Widgets.body(Text.translatable("routeweaver.rule_editor.no_profiles")));
+            profileCard.child(Widgets.body(Component.translatable("routeweaver.rule_editor.no_profiles")));
         } else {
             profileCard.child(profileDropdown.build(profiles, profileId, id -> profileId = id));
         }
@@ -90,15 +90,15 @@ final class RuleEditor {
         }
 
         FlowLayout actions = Widgets.row();
-        actions.child(Widgets.flexButton(Text.translatable("routeweaver.action.save"), this::save));
-        actions.child(Widgets.flexButton(Text.translatable("routeweaver.action.cancel"), () -> {
+        actions.child(Widgets.flexButton(Component.translatable("routeweaver.action.save"), this::save));
+        actions.child(Widgets.flexButton(Component.translatable("routeweaver.action.cancel"), () -> {
             onClose.accept(null);
             host.refresh();
         }));
         pane.child(actions);
 
         if (!isNew()) {
-            pane.child(Widgets.dangerButton(Text.translatable("routeweaver.rules.delete"), this::delete));
+            pane.child(Widgets.dangerButton(Component.translatable("routeweaver.rules.delete"), this::delete));
         }
         return pane;
     }
@@ -135,20 +135,20 @@ final class RuleEditor {
         rule.setPort(parsedPort);
         rule.setProxyProfileId(profileId);
 
-        host.flash(Text.translatable("routeweaver.flash.rule_saved", trimmedPattern), false);
+        host.flash(Component.translatable("routeweaver.flash.rule_saved", trimmedPattern), false);
         onClose.accept(rule.getId());
         host.saveAndRefresh();
     }
 
     private void delete() {
         host.config().getRules().removeIf(rule -> rule.getId().equals(ruleId));
-        host.flash(Text.translatable("routeweaver.flash.rule_deleted"), false);
+        host.flash(Component.translatable("routeweaver.flash.rule_deleted"), false);
         onClose.accept(null);
         host.saveAndRefresh();
     }
 
     private void fail(String translationKey) {
-        error = Text.translatable(translationKey);
+        error = Component.translatable(translationKey);
         host.refresh();
     }
 }
