@@ -84,4 +84,4 @@ agent/        deprecated standalone Go agent, kept for reference
 
 ## License
 
-All rights reserved. See [LICENSE.txt](LICENSE.txt).
+[MIT](LICENSE.txt).
