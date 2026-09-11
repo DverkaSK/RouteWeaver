@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "routeweaver",
+  "version": "${version}",
+  "name": "RouteWeaver",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/routeweaver/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-datagen": [
+      "ru.dverkask.routeweaver.client.ProxyDataGenerator"
+    ],
+    "client": [
+      "ru.dverkask.routeweaver.client.ProxyClient"
+    ],
+    "main": [
+      "ru.dverkask.routeweaver.RouteWeaver"
+    ]
+  },
+  "mixins": [
+    "routeweaver.mixins.json",
+    {
+      "config": "routeweaver.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
