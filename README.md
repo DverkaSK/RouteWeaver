@@ -19,6 +19,8 @@ Shadowsocks proxies, and leaves every other server on a direct connection.
 | Fabric API   | any       |
 | Java         | 21        |
 
+This is the `1.21.11` branch; Minecraft 26.1.2 is supported on the `26.1.2` branch.
+
 [owo-lib](https://github.com/wisp-forest/owo-lib) and the Kotlin standard library are bundled in
 the jar.
 
