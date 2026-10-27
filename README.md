@@ -1,32 +1,55 @@
-# RouteWeaver
+<div align="center">
 
-A client-side Fabric mod that sends connections to the Minecraft servers you choose through
-Shadowsocks proxies, and leaves every other server on a direct connection.
+<img src="docs/assets/logo.png" alt="RouteWeaver" width="800">
+
+**A client-side Fabric mod that sends connections to the Minecraft servers you choose through
+Shadowsocks proxies, and leaves every other server on a direct connection.**
+
+[![Build](https://img.shields.io/github/actions/workflow/status/DverkaSK/RouteWeaver/build.yml?branch=1.21.11&style=flat&labelColor=1A2E1A&label=build)](https://github.com/DverkaSK/RouteWeaver/actions/workflows/build.yml)
+[![Release](https://img.shields.io/github/v/release/DverkaSK/RouteWeaver?style=flat&labelColor=1A2E1A&color=C9F24A&label=release)](https://github.com/DverkaSK/RouteWeaver/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/DverkaSK/RouteWeaver/total?style=flat&labelColor=1A2E1A&color=C9F24A&label=downloads)](https://github.com/DverkaSK/RouteWeaver/releases)
+[![License](https://img.shields.io/github/license/DverkaSK/RouteWeaver?style=flat&labelColor=1A2E1A&color=C9F24A)](LICENSE.txt)
+<br>
+[![Minecraft](https://img.shields.io/badge/minecraft-1.21.11%20%7C%2026.1.2-C9F24A?style=flat&labelColor=1A2E1A)](#requirements)
+[![Fabric](https://img.shields.io/badge/loader-fabric-C9F24A?style=flat&labelColor=1A2E1A)](https://fabricmc.net/)
+[![Environment](https://img.shields.io/badge/environment-client-C9F24A?style=flat&labelColor=1A2E1A)](#how-it-works)
+
+[Download](https://github.com/DverkaSK/RouteWeaver/releases) ·
+[Usage](#usage) ·
+[Configuration](#configuration) ·
+[Building](#building) ·
+[Issues](https://github.com/DverkaSK/RouteWeaver/issues)
+
+</div>
+
+## Features
 
 - **Per-server routing**: pick a saved multiplayer server, pick a proxy, click *Save route*.
 - **Pattern rules**: `mc.example.net`, `*.example.net` or `*`, with an optional port filter.
 - **Built-in Shadowsocks client**: AEAD ciphers `chacha20-ietf-poly1305`, `aes-256-gcm` and
   `aes-128-gcm`. No external proxy software is required.
 - **`ss://` import**: paste a SIP002 or legacy link and the profile fills itself in.
+- **Virtual hosts keep working**: the handshake still carries the original host name.
+- **Server list untouched**: pings in the multiplayer list always go direct.
 - English and Russian interface.
 
 ## Requirements
 
-| Component    | Version   |
-|--------------|-----------|
-| Minecraft    | 1.21.11   |
-| Fabric Loader| 0.18.4+   |
-| Fabric API   | any       |
-| Java         | 21        |
+| Minecraft | Fabric Loader | Fabric API | Java | Branch                                                        |
+|-----------|---------------|------------|------|---------------------------------------------------------------|
+| 1.21.11   | 0.18.4+       | any        | 21+  | [`1.21.11`](https://github.com/DverkaSK/RouteWeaver/tree/1.21.11) |
+| 26.1.2    | 0.19.2+       | any        | 25+  | [`26.1.2`](https://github.com/DverkaSK/RouteWeaver/tree/26.1.2)   |
 
-This is the `1.21.11` branch; Minecraft 26.1.2 is supported on the `26.1.2` branch.
+This is the `1.21.11` branch.
 
 [owo-lib](https://github.com/wisp-forest/owo-lib) and the Kotlin standard library are bundled in
-the jar.
+the jar, so Fabric API is the only other mod you need.
 
 ## Usage
 
-1. Drop `routeweaver-<version>.jar` and Fabric API into `mods/`.
+1. Download `routeweaver-<version>+<minecraft>.jar` from
+   [Releases](https://github.com/DverkaSK/RouteWeaver/releases) and drop it into `mods/` together
+   with [Fabric API](https://modrinth.com/mod/fabric-api).
 2. Open **Multiplayer** and press **RouteWeaver** in the top-right corner.
 3. On **Proxies**, add a profile (or import an `ss://` link).
 4. On **Servers**, select a server, choose the proxy and press **Save route**.
@@ -42,7 +65,11 @@ default), and the tunnel relays the connection through Shadowsocks to the real s
 handshake still carries the original host name, so virtual-hosted servers keep working. The
 server-list pinger is never redirected.
 
-The configuration lives in `config/routeweaver/config.json`:
+The mod is client-side only; servers don't need it.
+
+## Configuration
+
+Everything set in the GUI is stored in `config/routeweaver/config.json`:
 
 ```json
 {
@@ -99,6 +126,7 @@ src/client/   Minecraft integration
   client/gui/ config screen (owo-lib)
   mixin/      connect-flow and multiplayer-screen hooks
 agent/        deprecated standalone Go agent, kept for reference
+docs/assets/  logo and icon
 ```
 
 ## License
