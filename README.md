@@ -5,14 +5,14 @@
 **A client-side Fabric mod that sends connections to the Minecraft servers you choose through
 Shadowsocks proxies, and leaves every other server on a direct connection.**
 
-[![Build](https://img.shields.io/github/actions/workflow/status/DverkaSK/RouteWeaver/build.yml?branch=26.1.2&style=flat&labelColor=1A2E1A&label=build)](https://github.com/DverkaSK/RouteWeaver/actions/workflows/build.yml)
-[![Release](https://img.shields.io/github/v/release/DverkaSK/RouteWeaver?style=flat&labelColor=1A2E1A&color=C9F24A&label=release)](https://github.com/DverkaSK/RouteWeaver/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/DverkaSK/RouteWeaver/total?style=flat&labelColor=1A2E1A&color=C9F24A&label=downloads)](https://github.com/DverkaSK/RouteWeaver/releases)
-[![License](https://img.shields.io/github/license/DverkaSK/RouteWeaver?style=flat&labelColor=1A2E1A&color=C9F24A)](LICENSE.txt)
+[![Build](https://img.shields.io/github/actions/workflow/status/DverkaSK/RouteWeaver/build.yml?branch=26.1.2&style=flat&labelColor=121A13&label=build)](https://github.com/DverkaSK/RouteWeaver/actions/workflows/build.yml)
+[![Release](https://img.shields.io/github/v/release/DverkaSK/RouteWeaver?style=flat&labelColor=121A13&color=C9F24A&label=release)](https://github.com/DverkaSK/RouteWeaver/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/DverkaSK/RouteWeaver/total?style=flat&labelColor=121A13&color=C9F24A&label=downloads)](https://github.com/DverkaSK/RouteWeaver/releases)
+[![License](https://img.shields.io/github/license/DverkaSK/RouteWeaver?style=flat&labelColor=121A13&color=C9F24A)](LICENSE.txt)
 <br>
-[![Minecraft](https://img.shields.io/badge/minecraft-1.21.11%20%7C%2026.1.2-C9F24A?style=flat&labelColor=1A2E1A)](#requirements)
-[![Fabric](https://img.shields.io/badge/loader-fabric-C9F24A?style=flat&labelColor=1A2E1A)](https://fabricmc.net/)
-[![Environment](https://img.shields.io/badge/environment-client-C9F24A?style=flat&labelColor=1A2E1A)](#how-it-works)
+[![Minecraft](https://img.shields.io/badge/minecraft-1.21.11%20%7C%2026.1.2-C9F24A?style=flat&labelColor=121A13)](#requirements)
+[![Fabric](https://img.shields.io/badge/loader-fabric-C9F24A?style=flat&labelColor=121A13)](https://fabricmc.net/)
+[![Environment](https://img.shields.io/badge/environment-client-C9F24A?style=flat&labelColor=121A13)](#how-it-works)
 
 [Download](https://github.com/DverkaSK/RouteWeaver/releases) ·
 [Usage](#usage) ·
